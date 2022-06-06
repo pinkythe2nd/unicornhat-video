@@ -1,0 +1,7 @@
+end - start = time taken 0.002
+
+duration / frames
+ 60 secs / 1440 = 24 should be rendering 24 frames per second.
+ time for each frame = 1 / 24 
+ if time_taken < time for each frame:
+	time.sleep(timeforeachframe - time_take)

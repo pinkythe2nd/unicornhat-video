@@ -1,0 +1,42 @@
+import pygame as pg
+import pickle
+import time
+import threading
+import unicornhathd
+import argparse
+
+def load(filename):
+    pickleFile = open(f"{filename}", "rb")
+    pickledArray = pickle.load(pickleFile)
+    return pickledArray
+
+def play(data, duration):
+    pg.mixer.Sound.play(pg.sndarray.make_sound(data))
+    time.sleep(duration + 1)
+
+def main(filename):
+    pg.mixer.init()
+    array = load(filename)
+    duration = array[1]
+    frames = len(array[2])
+    time_for_each_frame = duration / frames
+    x = threading.Thread(target=play, args=(array[0], duration, ))
+    x.start()
+    for x in array[2]:
+        start = time.time()
+        for i in range(16):
+            for t in range(16):
+                unicornhathd.set_pixel(i, t, x[t][i][0], x[t][i][1], x[t][i][2])
+        unicornhathd.show()
+        end = time.time()
+        time_taken = end - start
+        if time_taken < time_for_each_frame:
+            time.sleep(time_for_each_frame - time_taken)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description= "input a filename of a video and returns a serialized 2D array of 16 * 16 numbers of each frame of the video")
+    parser.add_argument("-i", "--input", help="url to download", required=True)
+    args = parser.parse_args()
+
+    main(args.input)
